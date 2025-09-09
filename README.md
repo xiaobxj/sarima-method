@@ -1,63 +1,63 @@
 # SARIMA Time Series Modeling for Treasury Cash Flow Data
 
-## 项目简介
+## Project Overview
 
-本项目实现了对美国财政部现金流数据的SARIMA时间序列建模。项目包含数据收集、预处理、个人时间序列生成以及批量SARIMA建模功能。
+This project implements SARIMA time series modeling on U.S. Treasury cash flow data. It covers data collection, preprocessing, generation of individual time series, and batch SARIMA modeling.
 
-## 项目结构
+## Project Structure
 
 ```
 pythonProject/
 ├── data/
-│   ├── raw/                              # 原始数据文件
+│   ├── raw/                              # Raw data files
 │   │   ├── deposits_withdrawals_operating_cash.csv
 │   │   ├── daily_cash_flows_*.csv
 │   │   └── ...
 │   └── processed/
-│       ├── individual_time_series/       # 197个独立时间序列文件
+│       ├── individual_time_series/       # 197 independent time series files
 │       └── treasury_modeling_data_*.csv
 ├── src/
 │   ├── data/
-│   │   ├── data_collector.py             # 数据收集模块
+│   │   ├── data_collector.py             # Data collection module
 │   │   ├── enhanced_field_mapper_complete.py
 │   │   └── run_data_collection.py
 │   └── model/
-│       ├── sarima_model.py               # SARIMA建模核心类
-│       ├── batch_modeling.py             # 批量建模处理
-│       ├── run_batch_sarima.py           # 批量建模执行脚本
-│       └── fitted_models/                # 186个训练好的SARIMA模型
+│       ├── sarima_model.py               # Core SARIMA modeling class
+│       ├── batch_modeling.py             # Batch modeling processing
+│       ├── run_batch_sarima.py           # Batch modeling execution script
+│       └── fitted_models/                # 186 trained SARIMA models
 ├── config/
-│   ├── config.py                         # 配置文件
+│   ├── config.py                         # Configuration file
 │   └── env_template.txt
-├── logs/                                 # 日志文件
-├── requirements.txt                      # 依赖包列表
-├── main.py                              # 主程序入口
-└── create_sarima_models.py              # 快速建模脚本
+├── logs/                                 # Log files
+├── requirements.txt                      # Dependency list
+├── main.py                               # Main entry point
+└── run_batch_sarima.py                   # Quick modeling script
 ```
 
-## 功能特性
+## Features
 
-### 1. 数据处理
-- **个人时间序列生成**: 从原始数据中提取197个独特的财政类别，生成独立的时间序列数据集
-- **数据预处理**: 处理缺失值、异常值检测和数据清洗
-- **非建模项目过滤**: 自动排除Cash FTD's、Public Debt等非建模类别
+### 1. Data Processing
+- **Individual Time Series Generation**: Extracts 197 unique Treasury categories from raw data and generates independent time series datasets
+- **Data Preprocessing**: Handles missing values, outlier detection, and data cleaning
+- **Non-modeling Category Filtering**: Automatically excludes non-modeling categories such as Cash FTDs and Public Debt
 
-### 2. SARIMA建模
-- **自动参数优化**: 使用网格搜索找到最优的SARIMA参数
-- **批量建模**: 并行处理多个时间序列，提高建模效率
-- **模型验证**: 包含残差分析、Ljung-Box检验等模型诊断
-- **预测功能**: 支持多步预测和置信区间计算
+### 2. SARIMA Modeling
+- **Automatic Parameter Optimization**: Uses grid search to find the best SARIMA parameters
+- **Batch Modeling**: Parallel processing of multiple time series for efficiency
+- **Model Validation**: Includes residual analysis, Ljung-Box test, and other diagnostics
+- **Forecasting**: Supports multi-step forecasting and confidence interval estimation
 
-### 3. 主要类别覆盖
+### 3. Major Categories Covered
 
-**存款类 (Deposits)**:
+**Deposits**:
 - Withheld Income and Employment Taxes
-- Individual Income Taxes  
+- Individual Income Taxes
 - Corporation Income Taxes
 - Federal Reserve Earnings
 - Other Deposits
 
-**支出类 (Withdrawals)**:
+**Withdrawals**:
 - Social Security Benefits (EFT)
 - Medicare & Medicaid
 - Defense Vendor Payments (EFT)
@@ -66,14 +66,14 @@ pythonProject/
 - Unemployment Insurance Benefits
 - Other Withdrawals
 
-## 安装和使用
+## Installation and Usage
 
-### 环境要求
+### Requirements
 ```bash
 pip install -r requirements.txt
 ```
 
-### 主要依赖
+### Main Dependencies
 - pandas >= 2.0.0
 - numpy >= 1.24.0
 - statsmodels >= 0.14.0
@@ -81,23 +81,23 @@ pip install -r requirements.txt
 - matplotlib
 - seaborn
 
-### 快速开始
+### Quick Start
 
-1. **生成个人时间序列**:
+1. **Generate Individual Time Series**:
 ```python
-# 已完成：197个独立时间序列文件保存在 data/processed/individual_time_series/
+# Already completed: 197 independent time series files saved in data/processed/individual_time_series/
 ```
 
-2. **批量SARIMA建模**:
+2. **Batch SARIMA Modeling**:
 ```bash
-python create_sarima_models.py
+python -m src.model.run_batch_sarima
 ```
 
-3. **使用单个模型**:
+3. **Use Individual Model**:
 ```python
 from src.model.sarima_model import SARIMAModel
 
-# 加载特定时间序列
+# Load specific time series
 model = SARIMAModel('Defense_Vendor_Payments_EFT', 
                    'data/processed/individual_time_series/Defense_Vendor_Payments_EFT.csv')
 model.load_data()
@@ -105,47 +105,47 @@ model.fit_model()
 forecast = model.forecast(steps=30)
 ```
 
-## 建模结果
+## Modeling Results
 
-- **成功建模**: 186/195 个时间序列 (95.4% 成功率)
-- **跳过文件**: 9个文件因数据不足被跳过
-- **模型类型**: SARIMA(p,d,q)×(P,D,Q,s) 其中 s=7 (周季节性)
-- **评估指标**: 使用AIC进行模型选择和比较
+- **Successfully Modeled**: 186/195 time series (95.4% success rate)
+- **Skipped Files**: 9 files skipped due to insufficient data
+- **Model Type**: SARIMA(p,d,q)×(P,D,Q,s) where s=7 (weekly seasonality)
+- **Evaluation Metric**: AIC used for model selection and comparison
 
-### 顶级模型示例 (按AIC排序)
+### Top Models (by AIC)
 - Change_in_Balance_of_Uncollected_Funds: AIC = -40742.81
 - Transfers_to_Depositaries: AIC = -40742.81  
 - Transfers_to_Federal_Reserve_Account: AIC = -37209.87
 - Transfers_from_Federal_Reserve_Account: AIC = -37235.66
 - Interest_recd_from_cash_investments: AIC = -35868.90
 
-## 数据来源
+## Data Sources
 
-本项目使用美国财政部Daily Treasury Statement数据，包含：
-- 联邦储备账户存取款记录
-- 公共债务交易数据
-- 税收存款和退税数据
-- 各政府部门支出数据
-- 时间跨度：2016年至2025年
+This project uses U.S. Treasury Daily Treasury Statement data, including:
+- Federal Reserve Account deposit and withdrawal records
+- Public debt transaction data
+- Tax deposit and refund data
+- Various government department expenditure data
+- Time span: 2016 to 2025
 
-## 技术特点
+## Technical Features
 
-- **并行处理**: 支持多核并行建模
-- **自动化流程**: 从数据加载到模型保存的全自动化流程
-- **错误处理**: 完善的异常处理和日志记录
-- **模型持久化**: 所有训练好的模型保存为pickle格式
-- **诊断工具**: 内置模型诊断和可视化功能
+- **Parallel Processing**: Supports multi-core parallel modeling
+- **Automated Pipeline**: Fully automated process from data loading to model saving
+- **Error Handling**: Comprehensive exception handling and logging
+- **Model Persistence**: All trained models saved in pickle format
+- **Diagnostic Tools**: Built-in model diagnostics and visualization functions
 
-## 贡献
+## Contributing
 
-欢迎提交Issue和Pull Request来改进这个项目。
+Welcome to submit Issues and Pull Requests to improve this project.
 
-## 许可证
+## License
 
 MIT License
 
 ---
 
-**作者**: xiaobxj  
-**项目链接**: https://github.com/xiaobxj/sarima-method  
-**创建时间**: 2025年1月
+**Author**: xiaobxj  
+**Project Link**: https://github.com/xiaobxj/sarima-method  
+**Created**: January 2025
