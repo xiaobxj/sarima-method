@@ -1,0 +1,48 @@
+{
+  "collection_timestamp": "2025-09-03T18:04:37.279715",
+  "date_range": {
+    "start_date": "2016-01-01",
+    "end_date": "2025-09-03"
+  },
+  "datasets_collected": [
+    "operating_cash_balance",
+    "deposits_withdrawals_operating_cash",
+    "public_debt_transactions",
+    "adjustment_public_debt_transactions_cash_basis",
+    "debt_subject_to_limit",
+    "inter_agency_tax_transfers",
+    "income_tax_refunds_issued",
+    "federal_tax_deposits",
+    "short_term_cash_investments"
+  ],
+  "tga_balance_records": 846,
+  "categorized_flows": [
+    "deposits",
+    "withdrawals"
+  ],
+  "category_mapping_size": 110,
+  "subtotal_check": {
+    "subtotal_categories_found": [
+      "Change in Balance of Uncollected Funds",
+      "Transfers from Depositaries",
+      "Transfers to Depositaries",
+      "Sub-Total Deposits",
+      "Sub-Total Withdrawals"
+    ],
+    "subtotal_records_count": 5476,
+    "total_records_count": 285635,
+    "daily_subtotal_amounts": {
+      "2016-01-04_Deposits": 0.0,
+      "2016-01-04_Withdrawals": 0.0,
+      "2016-01-05_Deposits": 0.0,
+      "2016-01-05_Withdrawals": 0.0,
+      "2016-01-06_Deposits": 0.0,
+      "2016-01-06_Withdrawals": 0.0,
+      "2016-01-07_Deposits": 0.0,
+      "2016-01-07_Withdrawals": 0.0,
+      "2016-01-08_Deposits": 0.0,
+      "2016-01-08_Withdrawals": 0.0
+    }
+  },
+  "daily_cash_flows_generated": true
+}
