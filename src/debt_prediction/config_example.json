@@ -1,0 +1,43 @@
+{
+  "AVERAGE_DEBT_MATURITY": 1825,
+  "BASE_DIR": "D:\\graduate-sufe\\summer project\\update-version\\pythonProject",
+  "CASH_BUFFER": 50000.0,
+  "CASH_FLOW_SCENARIOS": {
+    "baseline": 1.0,
+    "recession": 0.8,
+    "expansion": 1.1,
+    "crisis": 0.6
+  },
+  "CURRENT_PUBLIC_DEBT": 33000000.0,
+  "CURRENT_TGA_BALANCE": 215160.0,
+  "DAILY_ROLLOVER_RATE": 0.000547945205479452,
+  "DATA_DIR": "D:\\graduate-sufe\\summer project\\update-version\\pythonProject\\data",
+  "DEBT_CEILING_LIMIT": 35000000.0,
+  "DEBT_CEILING_SCENARIOS": {
+    "current": 35000000.0,
+    "raised_1t": 36000000.0,
+    "raised_2t": 37000000.0,
+    "suspended": Infinity
+  },
+  "DEBT_DATA_FILE": "D:\\graduate-sufe\\summer project\\update-version\\pythonProject\\data\\raw\\debt_subject_to_limit.csv",
+  "DEBT_WARNING_LEVELS": {
+    "red": 0.98,
+    "orange": 0.95,
+    "yellow": 0.9
+  },
+  "FORECASTS_FILE": "D:\\graduate-sufe\\summer project\\update-version\\pythonProject\\src\\model\\fitted_models\\forecasts\\all_forecasts_20250910_084013.csv",
+  "FORECAST_HORIZON": 180,
+  "LONG_TERM_RATE": 0.04,
+  "MEDIUM_TERM_RATE": 0.045,
+  "MINIMUM_CASH_BALANCE": 30000.0,
+  "MODEL_DIR": "D:\\graduate-sufe\\summer project\\update-version\\pythonProject\\src\\model\\fitted_models",
+  "OPERATING_BALANCE_FILE": "D:\\graduate-sufe\\summer project\\update-version\\pythonProject\\data\\raw\\operating_cash_balance.csv",
+  "OUTPUT_DIR": "D:\\graduate-sufe\\summer project\\update-version\\pythonProject\\output",
+  "SHORT_TERM_RATE": 0.05,
+  "START_DATE": "2025-09-02",
+  "X_DATE_WARNING_DAYS": {
+    "red": 7,
+    "orange": 30,
+    "yellow": 60
+  }
+}

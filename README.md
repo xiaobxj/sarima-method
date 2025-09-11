@@ -1,151 +1,259 @@
-# SARIMA Time Series Modeling for Treasury Cash Flow Data
+# US Treasury Debt Ceiling Analysis & Prediction System
 
-## Project Overview
+## 🎯 Project Overview
 
-This project implements SARIMA time series modeling on U.S. Treasury cash flow data. It covers data collection, preprocessing, generation of individual time series, and batch SARIMA modeling.
+This project implements a comprehensive **U.S. Treasury Debt Ceiling Analysis and Prediction System** that forecasts Treasury General Account (TGA) balance movements and identifies potential X-Date scenarios. The system integrates historical cash flow data, debt maturity schedules, and advanced simulation techniques to provide actionable insights for debt ceiling management.
 
-## Project Structure
+## 🚀 Key Features
+
+### 💰 **Cash Flow Analysis**
+- **Historical Data Integration**: Processes 20+ years of Treasury cash flow data (2005-2025)
+- **127+ Cash Flow Categories**: Comprehensive coverage of government receipts and outlays
+- **Real-time Forecasting**: Generates 180-day forward predictions with confidence intervals
+
+### 📊 **TGA Balance Simulation**
+- **Advanced Simulation Engine**: Monte Carlo-style simulation with automatic debt issuance
+- **X-Date Identification**: Predicts when Treasury cash balance may fall below critical thresholds
+- **Debt Ceiling Constraints**: Incorporates statutory debt limits and automatic triggers
+
+### 🗓️ **Debt Maturity Calendar**
+- **Principal & Interest Tracking**: Monitors scheduled debt redemptions and coupon payments
+- **CUSIP-Level Detail**: Tracks individual security characteristics and payment schedules
+- **Integration Ready**: Seamlessly integrates with simulation engine for accurate cash flow projections
+
+### 📈 **Advanced Analytics**
+- **Interactive Visualizations**: Comprehensive charts and graphs for decision support
+- **Scenario Analysis**: Multiple forecasting scenarios with sensitivity analysis
+- **Risk Assessment**: Quantifies probability of debt ceiling breaches
+
+## 🏗️ Project Structure
 
 ```
-pythonProject/
-├── data/
-│   ├── raw/                              # Raw data files
-│   │   ├── deposits_withdrawals_operating_cash.csv
-│   │   ├── daily_cash_flows_*.csv
-│   │   └── ...
-│   └── processed/
-│       ├── individual_time_series/       # 197 independent time series files
-│       └── treasury_modeling_data_*.csv
+debt-prediction-system/
 ├── src/
-│   ├── data/
-│   │   ├── data_collector.py             # Data collection module
-│   │   ├── enhanced_field_mapper_complete.py
-│   │   └── run_data_collection.py
-│   └── model/
-│       ├── sarima_model.py               # Core SARIMA modeling class
-│       ├── batch_modeling.py             # Batch modeling processing
-│       ├── run_batch_sarima.py           # Batch modeling execution script
-│       └── fitted_models/                # 186 trained SARIMA models
-├── config/
-│   ├── config.py                         # Configuration file
-│   └── env_template.txt
-├── logs/                                 # Log files
-├── requirements.txt                      # Dependency list
-├── main.py                               # Main entry point
-└── run_batch_sarima.py                   # Quick modeling script
+│   └── debt_prediction/
+│       ├── main.py                    # Main analysis entry point
+│       ├── config.py                  # System configuration
+│       ├── tga_simulator.py           # TGA balance simulation engine
+│       ├── debt_analyzer.py           # Debt ceiling analysis
+│       ├── debt_calendar.py           # Debt maturity tracking
+│       └── cash_flow_converter.py     # Data conversion utilities
+├── data/
+│   └── raw/
+│       ├── debt_subject_to_limit.csv  # Historical debt limit data
+│       └── operating_cash_balance.csv # TGA balance history
+├── src/model/fitted_models/forecasts/
+│   └── cash_flow_forecasts_corrected_*.csv  # Processed forecast data
+├── output/                            # Analysis results and visualizations
+├── cash_flow_with_cat.csv            # Core 20-year cash flow dataset
+├── requirements.txt                   # Python dependencies
+└── README.md                         # This file
 ```
 
-## Features
+## 🛠️ Installation & Setup
 
-### 1. Data Processing
-- **Individual Time Series Generation**: Extracts 197 unique Treasury categories from raw data and generates independent time series datasets
-- **Data Preprocessing**: Handles missing values, outlier detection, and data cleaning
-- **Non-modeling Category Filtering**: Automatically excludes non-modeling categories such as Cash FTDs and Public Debt
+### Prerequisites
+- Python 3.8+
+- Git (for version control)
 
-### 2. SARIMA Modeling
-- **Automatic Parameter Optimization**: Uses grid search to find the best SARIMA parameters
-- **Batch Modeling**: Parallel processing of multiple time series for efficiency
-- **Model Validation**: Includes residual analysis, Ljung-Box test, and other diagnostics
-- **Forecasting**: Supports multi-step forecasting and confidence interval estimation
-
-### 3. Major Categories Covered
-
-**Deposits**:
-- Withheld Income and Employment Taxes
-- Individual Income Taxes
-- Corporation Income Taxes
-- Federal Reserve Earnings
-- Other Deposits
-
-**Withdrawals**:
-- Social Security Benefits (EFT)
-- Medicare & Medicaid
-- Defense Vendor Payments (EFT)
-- Education Department Programs
-- Agriculture Department Programs
-- Unemployment Insurance Benefits
-- Other Withdrawals
-
-## Installation and Usage
-
-### Requirements
+### Installation
 ```bash
+# Clone the repository
+git clone https://github.com/xiaobxj/sarima-method.git
+cd sarima-method
+
+# Install dependencies
 pip install -r requirements.txt
 ```
 
-### Main Dependencies
-- pandas >= 2.0.0
-- numpy >= 1.24.0
-- statsmodels >= 0.14.0
-- scikit-learn
-- matplotlib
-- seaborn
-
-### Quick Start
-
-1. **Generate Individual Time Series**:
+### Dependencies
 ```python
-# Already completed: 197 independent time series files saved in data/processed/individual_time_series/
+# Core Data Processing
+pandas>=2.0.0
+numpy>=1.24.0
+
+# Financial Analysis
+scipy>=1.10.0
+statsmodels>=0.14.0
+
+# Visualization
+matplotlib>=3.7.0
+seaborn>=0.12.0
+plotly>=5.0.0
+
+# Configuration & Utilities
+python-dateutil>=2.8.0
+pydantic>=2.0.0
+tqdm>=4.65.0
 ```
 
-2. **Batch SARIMA Modeling**:
-```bash
-python -m src.model.run_batch_sarima
-```
+## 🚦 Quick Start
 
-3. **Use Individual Model**:
+### 1. **Basic Debt Analysis**
 ```python
-from src.model.sarima_model import SARIMAModel
+from src.debt_prediction.main import run_complete_analysis
 
-# Load specific time series
-model = SARIMAModel('Defense_Vendor_Payments_EFT', 
-                   'data/processed/individual_time_series/Defense_Vendor_Payments_EFT.csv')
-model.load_data()
-model.fit_model()
-forecast = model.forecast(steps=30)
+# Run full debt ceiling analysis
+results = run_complete_analysis()
+print(f"X-Date Prediction: {results['x_date']}")
+print(f"Days Until X-Date: {results['days_to_x_date']}")
 ```
 
-## Modeling Results
+### 2. **TGA Balance Simulation**
+```python
+from src.debt_prediction.tga_simulator import TGABalanceSimulator
+from src.debt_prediction.config import DebtPredictionConfig
 
-- **Successfully Modeled**: 186/195 time series (95.4% success rate)
-- **Skipped Files**: 9 files skipped due to insufficient data
-- **Model Type**: SARIMA(p,d,q)×(P,D,Q,s) where s=7 (weekly seasonality)
-- **Evaluation Metric**: AIC used for model selection and comparison
+# Initialize simulator
+config = DebtPredictionConfig()
+simulator = TGABalanceSimulator(config)
 
-### Top Models (by AIC)
-- Change_in_Balance_of_Uncollected_Funds: AIC = -40742.81
-- Transfers_to_Depositaries: AIC = -40742.81  
-- Transfers_to_Federal_Reserve_Account: AIC = -37209.87
-- Transfers_from_Federal_Reserve_Account: AIC = -37235.66
-- Interest_recd_from_cash_investments: AIC = -35868.90
+# Run 180-day simulation
+results = simulator.run_simulation()
+print(f"Final TGA Balance: ${results['opening_tga_balance'].iloc[-1]:,.0f}M")
+```
 
-## Data Sources
+### 3. **Debt Calendar Integration**
+```python
+from src.debt_prediction.debt_calendar import DebtEventsCalendar
 
-This project uses U.S. Treasury Daily Treasury Statement data, including:
-- Federal Reserve Account deposit and withdrawal records
-- Public debt transaction data
-- Tax deposit and refund data
-- Various government department expenditure data
-- Time span: 2016 to 2025
+# Create debt calendar
+calendar = DebtEventsCalendar()
+schedule = calendar.build_calendar()
 
-## Technical Features
+# Query specific date
+debt_service = calendar.get_scheduled_debt_service('2025-09-15')
+print(f"Principal Due: ${debt_service['principal_due']:,.0f}M")
+print(f"Interest Due: ${debt_service['interest_due']:,.0f}M")
+```
 
-- **Parallel Processing**: Supports multi-core parallel modeling
-- **Automated Pipeline**: Fully automated process from data loading to model saving
-- **Error Handling**: Comprehensive exception handling and logging
-- **Model Persistence**: All trained models saved in pickle format
-- **Diagnostic Tools**: Built-in model diagnostics and visualization functions
+## 📊 Data Sources & Methodology
 
-## Contributing
+### **Historical Cash Flow Data**
+- **Source**: U.S. Treasury Daily Treasury Statements
+- **Coverage**: October 2005 - July 2025 (418,000+ records)
+- **Categories**: 127+ distinct cash flow types
+- **Processing**: Automated sign correction and categorization
 
-Welcome to submit Issues and Pull Requests to improve this project.
+### **Forecasting Methodology**
+- **Base Model**: Historical mean with seasonal adjustments
+- **Validation**: 2024 data used for parameter estimation
+- **Horizon**: 180-day rolling forecasts
+- **Confidence Intervals**: 95% prediction bands
 
-## License
+### **Key Cash Flow Categories**
 
-MIT License
+#### 🔼 **Major Inflows**
+- Public Debt Issuance: ~$118,491M/day
+- Withheld Income Taxes: ~$13,508M/day  
+- Corporate Income Taxes: ~$1,999M/day
+- Federal Reserve Earnings: Variable
+
+#### 🔽 **Major Outflows**
+- Debt Redemptions: ~$113,860M/day
+- Social Security Payments: ~$5,433M/day
+- Medicare/Medicaid: ~$4,810M/day
+- Interest on Treasury Securities: ~$2,194M/day
+
+## 🎯 System Capabilities
+
+### **X-Date Analysis**
+- **Definition**: Date when Treasury cash balance falls below operational minimum
+- **Threshold**: Configurable minimum balance (default: $30B)
+- **Buffer**: Additional safety margin (default: $50B)
+- **Probability**: Monte Carlo estimation of breach likelihood
+
+### **Debt Ceiling Integration**
+- **Current Limit**: $35,000B (configurable)
+- **Outstanding Debt**: ~$33,000B
+- **Available Capacity**: ~$2,000B
+- **Automatic Issuance**: Triggered when TGA < minimum threshold
+
+### **Scenario Analysis**
+- **Base Case**: Historical patterns continue
+- **Stress Testing**: Revenue shortfalls, expense surges
+- **Policy Impact**: Tax policy changes, spending modifications
+- **Seasonal Adjustments**: Holiday patterns, fiscal year effects
+
+## 📈 Sample Output
+
+```
+🏛️  U.S. Treasury Debt Ceiling Analysis Report
+═══════════════════════════════════════════════
+
+📊 Current Status (2025-07-22):
+   💰 TGA Balance: $215,160M
+   📊 Public Debt: $33,000,000M  
+   🎯 Debt Ceiling: $35,000,000M
+   📏 Available Capacity: $2,000,000M
+
+🔮 180-Day Forecast:
+   📅 X-Date Estimate: 2026-01-15
+   ⏰ Days to X-Date: 177 days
+   📉 Minimum Balance: $25,847M (2025-12-31)
+   
+🎲 Risk Assessment:
+   🟢 Low Risk (30+ days): 85%
+   🟡 Medium Risk (7-30 days): 12%  
+   🔴 High Risk (<7 days): 3%
+```
+
+## 🔧 Configuration
+
+The system uses a centralized configuration approach:
+
+```python
+# src/debt_prediction/config.py
+class DebtPredictionConfig:
+    # Simulation Parameters
+    START_DATE = date(2025, 7, 22)
+    FORECAST_HORIZON = 180
+    
+    # Financial Thresholds  
+    DEBT_CEILING_LIMIT = 35_000_000  # $35T
+    MINIMUM_CASH_BALANCE = 30_000    # $30B
+    CASH_BUFFER = 50_000            # $50B
+    
+    # Data Sources
+    FORECASTS_FILE = "cash_flow_forecasts_corrected_*.csv"
+    DEBT_DATA_FILE = "debt_subject_to_limit.csv"
+```
+
+## 🤝 Contributing
+
+We welcome contributions to improve the debt prediction system:
+
+1. **Fork** the repository
+2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
+3. **Commit** your changes (`git commit -m 'Add amazing feature'`)
+4. **Push** to the branch (`git push origin feature/amazing-feature`)
+5. **Open** a Pull Request
+
+### Areas for Contribution
+- Enhanced forecasting models (ARIMA, ML approaches)
+- Real-time data integration
+- Additional visualization capabilities
+- Performance optimizations
+- Documentation improvements
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- **U.S. Treasury**: For providing comprehensive financial data
+- **Federal Reserve**: Economic data and research
+- **Open Source Community**: Python libraries and tools
+
+## 📞 Contact & Support
+
+- **Author**: xiaobxj
+- **Project**: [https://github.com/xiaobxj/sarima-method](https://github.com/xiaobxj/sarima-method)
+- **Issues**: [GitHub Issues](https://github.com/xiaobxj/sarima-method/issues)
 
 ---
 
-**Author**: xiaobxj  
-**Project Link**: https://github.com/xiaobxj/sarima-method  
-**Created**: January 2025
+**⚠️ Disclaimer**: This system is for educational and research purposes only. It should not be used as the sole basis for financial or policy decisions. Always consult official Treasury guidance and professional financial analysis.
+
+**🔄 Last Updated**: September 2025 | **Version**: 2.0.0 | **Status**: Active Development

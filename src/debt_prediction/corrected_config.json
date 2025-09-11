@@ -1,0 +1,14 @@
+{
+  "START_DATE": "2025-07-22",
+  "FORECAST_HORIZON": 180,
+  "FORECASTS_FILE": "D:\\graduate-sufe\\summer project\\update-version\\pythonProject\\src\\model\\fitted_models\\forecasts\\cash_flow_forecasts_corrected_20250911_125718.csv",
+  "CURRENT_TGA_BALANCE": 215160.0,
+  "CURRENT_PUBLIC_DEBT": 33000000.0,
+  "DEBT_CEILING_LIMIT": 35000000.0,
+  "MINIMUM_CASH_BALANCE": 30000.0,
+  "CASH_BUFFER": 50000.0,
+  "DATA_SOURCE": "cash_flow_with_cat.csv",
+  "INTEGRATION_DATE": "2025-09-11T12:57:18.916685",
+  "NOTES": "Corrected signs: Outlays negative, Receipts positive",
+  "CORRECTION_APPLIED": true
+}
