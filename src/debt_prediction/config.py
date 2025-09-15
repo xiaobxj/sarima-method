@@ -73,7 +73,7 @@ class DebtPredictionConfig:
         
         # Input data files - Updated to use corrected cash flow data with proper signs
         self.FORECASTS_FILE = os.path.join(
-            self.MODEL_DIR, "forecasts", "cash_flow_forecasts_corrected_20250911_125718.csv"
+            self.MODEL_DIR, "forecasts", "net_cash_flow_pre.csv"
         )
         self.OPERATING_BALANCE_FILE = os.path.join(
             self.DATA_DIR, "raw", "operating_cash_balance.csv"

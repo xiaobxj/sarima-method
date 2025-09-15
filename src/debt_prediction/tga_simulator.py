@@ -147,7 +147,21 @@ class TGABalanceSimulator:
         
         try:
             self.forecast_df = pd.read_csv(self.config.FORECASTS_FILE)
-            self.forecast_df['forecast_date'] = pd.to_datetime(self.forecast_df['forecast_date'])
+            
+            # Check if this is the net cash flow format (date, forecast, pi_lo, pi_hi)
+            if 'date' in self.forecast_df.columns and 'forecast' in self.forecast_df.columns:
+                print("   Detected net cash flow format - converting to expected format...")
+                
+                # Convert to expected format
+                self.forecast_df['forecast_date'] = pd.to_datetime(self.forecast_df['date'])
+                self.forecast_df['series_name'] = 'Net Cash Flow'
+                self.forecast_df['forecast_amount'] = self.forecast_df['forecast']
+                self.forecast_df['lower_bound'] = self.forecast_df['pi_lo']
+                self.forecast_df['upper_bound'] = self.forecast_df['pi_hi']
+                
+            else:
+                # Original multi-series format
+                self.forecast_df['forecast_date'] = pd.to_datetime(self.forecast_df['forecast_date'])
             
             # Filter to forecast horizon
             start_date = pd.to_datetime(self.config.START_DATE)
@@ -314,6 +328,11 @@ class TGABalanceSimulator:
         
         series_names = self.forecast_df['series_name'].unique()
         
+        # Handle simple net cash flow format
+        if len(series_names) == 1 and 'Net Cash Flow' in series_names:
+            print("   Detected single net cash flow series - using simplified categorization")
+            return ['Net Cash Flow'], [], []
+        
         deposits = []
         withdrawals = []
         unclassified = []
@@ -454,25 +473,36 @@ class TGABalanceSimulator:
         # Store classification report for later analysis
         self.classification_report = classification_report
         
-        # Pivot forecast data to have dates as index and series as columns
-        pivot_df = self.forecast_df.pivot(
-            index='forecast_date', 
-            columns='series_name', 
-            values='forecast_value'
-        ).fillna(0)
-        
-        # Calculate daily totals (convert from millions to actual dollars)
-        daily_deposits = pivot_df[deposits].sum(axis=1) * 1_000_000
-        daily_withdrawals = pivot_df[withdrawals].sum(axis=1) * 1_000_000
-        
-        # Add unclassified to withdrawals (conservative approach)
-        if unclassified:
-            daily_unclassified = pivot_df[unclassified].sum(axis=1) * 1_000_000
-            daily_withdrawals += daily_unclassified
-        
-        # Calculate net cash flow (positive = surplus, negative = deficit)
-        # Note: withdrawals are already negative in our corrected data, so we add them
-        daily_net_cash_flow = daily_deposits + daily_withdrawals
+        # Handle different data formats
+        if 'forecast_amount' in self.forecast_df.columns:
+            # Simple net cash flow format - use directly
+            print("   Using direct net cash flow data...")
+            daily_net_cash_flow_series = self.forecast_df.set_index('forecast_date')['forecast_amount'] * 1_000_000
+            
+            # For compatibility, create separate deposits/withdrawals based on sign
+            daily_deposits = daily_net_cash_flow_series.where(daily_net_cash_flow_series > 0, 0)
+            daily_withdrawals = daily_net_cash_flow_series.where(daily_net_cash_flow_series < 0, 0)
+            daily_net_cash_flow = daily_net_cash_flow_series
+        else:
+            # Original multi-series format
+            pivot_df = self.forecast_df.pivot(
+                index='forecast_date', 
+                columns='series_name', 
+                values='forecast_value'
+            ).fillna(0)
+            
+            # Calculate daily totals (convert from millions to actual dollars)
+            daily_deposits = pivot_df[deposits].sum(axis=1) * 1_000_000
+            daily_withdrawals = pivot_df[withdrawals].sum(axis=1) * 1_000_000
+            
+            # Add unclassified to withdrawals (conservative approach)
+            if unclassified:
+                daily_unclassified = pivot_df[unclassified].sum(axis=1) * 1_000_000
+                daily_withdrawals += daily_unclassified
+            
+            # Calculate net cash flow (positive = surplus, negative = deficit)
+            # Note: withdrawals are already negative in our corrected data, so we add them
+            daily_net_cash_flow = daily_deposits + daily_withdrawals
         
         # Create summary DataFrame
         self.daily_cash_flows = pd.DataFrame({
